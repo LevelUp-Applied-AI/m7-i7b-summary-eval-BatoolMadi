@@ -49,3 +49,22 @@ Open a Pull Request from your working branch into `main`. The autograder runs `m
 This repository is provided for educational use only. See [LICENSE](LICENSE) for terms.
 
 You may clone and modify this repository for personal learning and practice, and reference code you wrote here in your professional portfolio. Redistribution outside this course is not permitted.
+
+
+## Summarization Evaluation
+
+This project evaluates the pretrained summarization model `sshleifer/distilbart-cnn-6-6` on a corpus of 120 technology news articles from Module 6. DistilBART is a lightweight abstractive summarization model derived from BART.
+
+Reference summaries are stored in `data/tech_news_summaries_reference.csv` and are used to compute ROUGE-1, ROUGE-2, and ROUGE-L scores.
+
+To rerun the evaluation:
+
+```bash
+make summarize
+```
+
+## Additional Notes
+
+The summarization evaluation uses deterministic beam-search decoding with `do_sample=False` and `num_beams=4` to ensure reproducible outputs across runs. ROUGE evaluation is computed using stemming-enabled ROUGE-1, ROUGE-2, and ROUGE-L F1 metrics.
+
+The generated evaluation artifacts include both aggregate metrics and per-article predictions. This allows qualitative inspection of summary faithfulness in addition to quantitative ROUGE evaluation. The full evaluation was executed on CPU using Hugging Face Transformers pipelines.
