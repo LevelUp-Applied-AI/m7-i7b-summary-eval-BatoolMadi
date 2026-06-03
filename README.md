@@ -62,3 +62,9 @@ To rerun the evaluation:
 ```bash
 make summarize
 ```
+
+## Additional Notes
+
+The summarization evaluation uses deterministic beam-search decoding with `do_sample=False` and `num_beams=4` to ensure reproducible outputs across runs. ROUGE evaluation is computed using stemming-enabled ROUGE-1, ROUGE-2, and ROUGE-L F1 metrics.
+
+The generated evaluation artifacts include both aggregate metrics and per-article predictions. This allows qualitative inspection of summary faithfulness in addition to quantitative ROUGE evaluation. The full evaluation was executed on CPU using Hugging Face Transformers pipelines.
