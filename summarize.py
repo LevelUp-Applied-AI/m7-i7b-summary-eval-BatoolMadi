@@ -122,7 +122,7 @@ def evaluate_summaries(summ, articles_df: pd.DataFrame, refs_df: pd.DataFrame) -
     rougeL_total = 0 
     for _, row in merged.iterrows(): 
         article_id = row["article_id"] 
-        article = row["article"] 
+        article = row["text"] if "text" in row else row["article"]
         reference_summary = row["reference_summary"] 
         predicted_summary = summarize_one( summ, article ) 
         rouge_scores = compute_rouge( predicted_summary, reference_summary ) 
