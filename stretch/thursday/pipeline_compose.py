@@ -14,6 +14,8 @@ import sys
 
 import pandas as pd
 
+from transformers import AutoTokenizer
+
 # Import the integration's summarizer functions
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 import summarize  # noqa: E402
@@ -33,6 +35,9 @@ except ImportError as e:
     ) from e
 
 
+tokenizer = AutoTokenizer.from_pretrained( qa_utils.get_qa_model_name() )
+
+
 def qa_full_article(qa, question: str, article: str, max_chunk: int = 384) -> str:
     """
     Run QA over the full article, chunking with overlap when it exceeds max_chunk tokens.
@@ -43,7 +48,22 @@ def qa_full_article(qa, question: str, article: str, max_chunk: int = 384) -> st
     # TODO: if it exceeds max_chunk, split into overlapping windows (e.g., 384-token windows with 64-token overlap)
     # TODO: call qa on each window; track the pipeline's score per window
     # TODO: return the answer string from the highest-scoring window
-    raise NotImplementedError("qa_full_article not implemented")
+    overlap = 64
+    tokens = tokenizer.tokenize(article)
+    # Short article
+    if len(tokens) <= max_chunk:
+        return qa_utils.predict_one(qa, question, article)
+    best_answer = ""
+    best_score = -1
+    stride = max_chunk - overlap
+    for start in range(0, len(tokens), stride):
+        chunk_tokens = tokens[start:start + max_chunk]
+        chunk_text = tokenizer.convert_tokens_to_string(chunk_tokens)
+        result = qa(question=question, context=chunk_text)
+        if result["score"] > best_score:
+            best_score = result["score"]
+            best_answer = result["answer"]
+    return best_answer
 
 
 def qa_via_summary(qa, summ, question: str, article: str, max_summary_length: int = 120) -> str:
@@ -55,7 +75,18 @@ def qa_via_summary(qa, summ, question: str, article: str, max_summary_length: in
     # TODO: summarize the article using summarize.summarize_one with the given max_summary_length
     # TODO: run QA on the summary using qa_utils.predict_one
     # TODO: return the answer string
-    raise NotImplementedError("qa_via_summary not implemented")
+    summary = summarize.summarize_one( 
+        summ, 
+        article, 
+        max_length=max_summary_length, 
+        do_sample=False, num_beams=4 ) 
+    
+    answer = qa_utils.predict_one( 
+        qa, 
+        question, 
+        summary 
+        ) 
+    return answer
 
 
 def evaluate_strategies(qa, summ, test_set: pd.DataFrame, articles_df: pd.DataFrame) -> dict:
@@ -77,7 +108,42 @@ def evaluate_strategies(qa, summ, test_set: pd.DataFrame, articles_df: pd.DataFr
     # TODO: call qa_full_article (Strategy A) and qa_via_summary (Strategy B); record predictions
     # TODO: compute EM + F1 for each strategy via qa_utils.exact_match / qa_utils.token_f1
     # TODO: aggregate per-strategy means; return the combined dict
-    raise NotImplementedError("evaluate_strategies not implemented")
+    predictions = [] 
+    
+    strategy_a_em_total = 0 
+    strategy_a_f1_total = 0 
+    strategy_b_em_total = 0 
+    strategy_b_f1_total = 0 
+
+    for _, row in test_set.iterrows(): 
+        qid = row["qid"] 
+        article_id = row["article_id"] 
+        question = row["question"] 
+        gold_answer = row["gold_answer"] 
+        article_row = articles_df[ articles_df["article_id"] == article_id ] 
+        if article_row.empty: 
+            continue 
+        article = article_row.iloc[0]["text"] 
+        # Strategy A 
+        strategy_a_pred = qa_full_article( qa, question, article ) 
+
+        # Strategy B 
+        strategy_b_pred = qa_via_summary( qa, summ, question, article ) 
+
+        # Metrics 
+        strategy_a_em = qa_utils.exact_match( strategy_a_pred, gold_answer ) 
+        strategy_a_f1 = qa_utils.token_f1( strategy_a_pred, gold_answer ) 
+        strategy_b_em = qa_utils.exact_match( strategy_b_pred, gold_answer ) 
+        strategy_b_f1 = qa_utils.token_f1( strategy_b_pred, gold_answer ) 
+        strategy_a_em_total += strategy_a_em 
+        strategy_a_f1_total += strategy_a_f1 
+        strategy_b_em_total += strategy_b_em 
+        strategy_b_f1_total += strategy_b_f1 
+
+        predictions.append({ "qid": qid, "question": question, "strategy_a_pred": strategy_a_pred, "strategy_b_pred": strategy_b_pred, "gold_answer": gold_answer, "strategy_a_em": strategy_a_em, "strategy_a_f1": strategy_a_f1, "strategy_b_em": strategy_b_em, "strategy_b_f1": strategy_b_f1, }) 
+
+    n = len(predictions) 
+    return { "strategy_a": { "em": strategy_a_em_total / n, "f1": strategy_a_f1_total / n, "n": n, }, "strategy_b": { "em": strategy_b_em_total / n, "f1": strategy_b_f1_total / n, "n": n, }, "predictions": predictions, }
 
 
 def main() -> None:

@@ -1,0 +1,14 @@
+{
+  "strategy_a": {
+    "em": 0.35,
+    "f1": 0.48166666666666674,
+    "n": 20
+  },
+  "strategy_b": {
+    "em": 0.2,
+    "f1": 0.24166666666666664,
+    "n": 20
+  },
+  "qa_model": "distilbert-base-cased-distilled-squad",
+  "summarizer_model": "sshleifer/distilbart-cnn-6-6"
+}
