@@ -49,3 +49,85 @@ Open a Pull Request from your working branch into `main`. The autograder runs `m
 This repository is provided for educational use only. See [LICENSE](LICENSE) for terms.
 
 You may clone and modify this repository for personal learning and practice, and reference code you wrote here in your professional portfolio. Redistribution outside this course is not permitted.
+
+## Summarization Model
+
+This project uses the Hugging Face model:
+
+* `sshleifer/distilbart-cnn-6-6`
+
+for abstractive summarization tasks. The model was loaded using the Hugging Face `pipeline("summarization")` API.
+
+---
+
+## Corpus Details
+
+The evaluation corpus consists of more than 1,000 technology, entertainment, cybersecurity, and celebrity news articles provided in:
+
+* `data/tech_news_articles.csv`
+
+Reference summaries are stored in:
+
+* `data/tech_news_summaries_reference.csv`
+
+The stretch evaluation additionally uses a manually-authored QA dataset containing 20 extractive QA examples across multiple long-form articles.
+
+---
+
+## Results Summary
+
+### Integration 7B Summarization Results
+
+The summarization pipeline was evaluated using ROUGE metrics:
+
+* ROUGE-1
+* ROUGE-2
+* ROUGE-L
+
+### Stretch: Summarize-then-QA Results
+
+| Strategy                      | EM   | F1     |
+| ----------------------------- | ---- | ------ |
+| Full-article QA with chunking | 0.35 | 0.4817 |
+| Summarize-then-QA             | 0.20 | 0.2417 |
+
+The results show that chunked full-document QA preserves factual accuracy better than summarize-then-QA, especially for numerical or detail-heavy questions.
+
+---
+
+## Re-run Instructions
+
+Create and activate the virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the summarization evaluation:
+
+```bash
+python summarize.py
+```
+
+Run the stretch summarize-then-QA pipeline:
+
+```bash
+python stretch/thursday/pipeline_compose.py
+```
+
+---
+
+## Implementation Notes
+
+* The QA system uses `distilbert-base-cased-distilled-squad`.
+* Long articles are processed using overlapping chunk windows.
+* Summaries are generated deterministically using beam search (`num_beams=4`, `do_sample=False`).
+* ROUGE scoring uses stemming-enabled evaluation.
+* The summarize-then-QA strategy demonstrated lower factual recall because summarization occasionally removed answer evidence required for extractive QA.

@@ -1,0 +1,21 @@
+qid,question,strategy_a_pred,strategy_b_pred,gold_answer,strategy_a_em,strategy_a_f1,strategy_b_em,strategy_b_f1
+EX_01,Which filmmaker was arrested in Switzerland?,Roman Polanski,Roman Polanski,Roman Polanski,1,1.0,1,1.0
+EX_02,How old was the girl involved in the case?,13,76,13-year-old girl,0,0.0,0,0.0
+EX_03,Which movie earned Polanski the Academy Award for Best Director?,Zurich Film Festival,NEW: Roman Polanski,The Pianist,0,0.0,0,0.0
+EX_04,Where was Polanski heading when he was arrested?,Switzerland,Switzerland,Zurich Film Festival,0,0.0,0,0.0
+EX_05,Which festival was Polanski traveling to when he was arrested?,Zurich Film Festival,Zurich Film Festival,Zurich Film Festival,1,1.0,1,1.0
+EX_06,Which director described Polanski as a brilliant fantastic genius?,Adrien Brody,Otto Weisser,Otto Weisser,0,0.0,1,1.0
+EX_07,Which movie first stormed Hollywood for Polanski?,Rosemary ' s Baby,Roman Polanski was arrested Saturday in Switzerland,Rosemary's Baby,0,0.4,0,0.0
+EX_08,Which actor worked with Polanski in The Pianist?,Adrien Brody,Otto Weisser,Adrien Brody,1,1.0,0,0.0
+EX_09,"Which TV show used Kearney's song ""Breathe In Breathe Out""?",CNN,CNN,Grey's Anatomy,0,0.0,0,0.0
+EX_10,What is the title of Mat Kearney's new album?,City of Black & White,City of Black & White,City of Black & White,1,1.0,1,1.0
+EX_11,"Where did Kearney write the title track of ""City of Black & White""?",Istanbul,Tuesday,Istanbul,1,1.0,0,0.0
+EX_12,How many shows did Kearney play for two years straight?,275,30,275 shows,0,0.6666666666666666,0,0.0
+EX_13,How many account hijacking cases have been reported since 2006?,"3, 200","nearly 3,200","3,200 account hijacking cases",0,0.0,0,0.3333333333333333
+EX_14,What is the process called when fake websites trick users into revealing passwords?,cybercrime,hijacking,phishing attack,0,0.0,0,0.0
+EX_15,How many friends does the average Facebook user have?,120,"3,200",120 friends,0,0.6666666666666666,0,0.0
+EX_16,By what percentage did Twitter grow from February 2008 to February 2009?,"1, 382 percent",cybercrooks,"1,382 percent",0,0.4,0,0.0
+EX_17,In which city was Roberto Cavalli born?,Florence,Los Angeles,Florence,1,1.0,0,0.0
+EX_18,Which fashion store collaborated with Cavalli in 2007?,H & M,Roberto Cavalli,H&M,0,0.0,0,0.0
+EX_19,Who is Roberto Cavalli's wife and business partner?,Eva Duringer,celebrity clientele,Eva Duringer,1,1.0,0,0.0
+EX_20,How many countries sell Cavalli's main fashion line?,over 50,over 50,50 countries,0,0.5,0,0.5

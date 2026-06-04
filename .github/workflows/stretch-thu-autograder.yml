@@ -30,4 +30,7 @@ jobs:
       - name: Run stretch autograder
         env:
           HF_HUB_DISABLE_TELEMETRY: '1'
+          HF_HUB_DOWNLOAD_TIMEOUT: '120'
+          TRANSFORMERS_OFFLINE: 'false'
         run: pytest tests/test_stretch_thu.py -v
+
